@@ -27,6 +27,22 @@ jobs:
           python-version: '3.12'
       - name: Install dbt
         run: pip install dbt-databricks
+      - name: Create dbt profiles.yml
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          citibike:
+            target: prod
+            outputs:
+              prod:
+                type: databricks
+                catalog: citibike
+                schema: silver
+                host: "{{ env_var('DATABRICKS_HOST') }}"
+                http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+                token: "{{ env_var('DATABRICKS_TOKEN') }}"
+                threads: 4
+          EOF
       - name: Run dbt against CI catalog
         working-directory: dbt/citibike_analytics_pipeline
         env:
