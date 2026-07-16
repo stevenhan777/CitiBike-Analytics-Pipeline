@@ -40,9 +40,7 @@ def resolve_month_key(entry_name, year):
         if month_name in MONTH_NAME_TO_NUM:
             return f"{year}{MONTH_NAME_TO_NUM[month_name]}"
         elif 1 <= int(month_num_raw) <= 12:
-	        print("there was typo in ", month_name)
             return f"{year}{month_num_raw}"
-            
     return None
 
 def combine_csvs(csv_paths, output_path):
