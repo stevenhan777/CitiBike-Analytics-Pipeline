@@ -1,0 +1,71 @@
+version: 2
+
+sources:
+  - name: bronze
+    catalog: citibike
+    schema: bronze
+    tables:
+      - name: trips_raw_legacy
+        description: >
+          Raw Citi Bike trip data, before 2020-01 schema era. Columns match the
+          original CSV headers.
+          No type casting or business logic applied.
+        columns:
+          - name: tripduration
+            description: Trip duration in seconds (as provided, string in bronze)
+          - name: starttime
+            description: Trip start date and timestamp (string)
+          - name: stoptime
+            description: Trip end date and timestamp (string)
+          - name: "start station id"
+            description: ID of the station where the trip started (string)
+          - name: "start station name"
+            description: Name of the station where the trip started
+          - name: "start station latitude"
+            description: Latitude of the start station (string)
+          - name: "start station longitude"
+            description: Longitude of the start station (string)
+          - name: "end station id"
+            description: ID of the station where the trip ended (string)
+          - name: "end station name"
+            description: Name of the station where the trip ended
+          - name: "end station latitude"
+            description: Latitude of the end station (string)
+          - name: "end station longitude"
+            description: Longitude of the end station (string)
+          - name: bikeid
+            description: ID of the bike used for the trip
+          - name: usertype
+            description: "'Subscriber' or 'Customer' in legacy schema"
+          - name: "birth year"
+            description: Birth year of the rider
+          - name: gender
+            description: Gender of the rider, 0 is unknown, 1 is male, 2 is female
+          - name: source_file
+            description: Full path of the source CSV this row was loaded from
+          - name: ingestion_timestamp
+            description: Timestamp when this row was loaded into bronze
+          - name: schema_era
+            description: Which schema era this row came from ("legacy" or "current")
+
+      - name: trips_raw_current
+        description: >
+          Raw Citi Bike trip data, 2020-01 to present. Columns match
+          the current CSV headers.
+        columns:
+          - name: ride_id
+          - name: rideable_type
+          - name: started_at
+          - name: ended_at
+          - name: start_station_name
+          - name: start_station_id
+          - name: end_station_name
+          - name: end_station_id
+          - name: start_lat
+          - name: start_lng
+          - name: end_lat
+          - name: end_lng
+          - name: member_casual
+          - name: source_file
+          - name: ingestion_timestamp
+          - name: schema_era

@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: silver_trips
+    description: >
+      Unified schema from legacy and current, typed each feature and removed duplicates.
+      Filters out trips with non-positive duration, or
+      coordinates outside the NYC metro area. Trips missing a start or end
+      station ID are kept and flagged via is_complete_trip rather than
+      dropped.
+    columns:
+      - name: ride_id
+        description: Unique trip identifier
+        tests:
+          - unique
+          - not_null
+
+      - name: started_at
+        description: Trip start timestamp
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "'2013-01-01'"
+                max_value: "current_timestamp()"
+
+      - name: ended_at
+        description: Trip end timestamp
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: "'2013-01-01'"
+                max_value: "current_timestamp()"
+
+      - name: trip_duration_seconds
+        description: Trip duration in seconds
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 999999999  # effectively unbounded
+
+      - name: is_over24hour_trip
+        description: >
+          True when trip_duration_seconds exceeds 86400 (24 hours), Citi Bike's
+          standard checkout policy window. No natural gap exists in the duration
+          distribution beyond this point, so trips are flagged rather than
+          filtered -- likely includes both legitimate long rentals and
+          lost/unreturned bikes.
+        tests:
+          - not_null
+
+      - name: start_station_id
+        description: Identifier of the trip's start station (may be null)
+      - name: end_station_id
+        description: Identifier of the trip's end station (may be null)
+      - name: rider_type
+        description: Rider classification ("member" or "casual")
+        tests:
+          - accepted_values:
+              values: ["member", "casual"]
+      - name: is_complete_trip
+        description: >
+          True when both start_station_id and end_station_id are present.
+          False could indicate a bike that was never properly docked
+          at trip end (lost, stolen, or not returned)
+        tests:
+          - not_null

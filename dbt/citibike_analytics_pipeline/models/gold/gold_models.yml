@@ -1,0 +1,107 @@
+version: 2
+
+models:
+  - name: gold_trips_by_station_hour
+    description: >
+      Trip volume by station, date, and hour of day. Excludes incomplete
+      trips and trips over 24 hours outliers.
+    columns:
+      - name: start_station_id
+        tests:
+          - not_null
+      - name: trip_date
+        tests:
+          - not_null
+      - name: trip_hour
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 23
+      - name: trip_count
+        description: Total trips starting at this station, date, and hour
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: member_trip_count
+        tests:
+          - not_null
+      - name: casual_trip_count
+        tests:
+          - not_null
+
+  - name: gold_member_vs_casual
+    description: >
+      Daily trip volume and duration statistics, split by rider type
+      (member vs. casual).
+    columns:
+      - name: trip_date
+        tests:
+          - not_null
+      - name: rider_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["member", "casual"]
+      - name: trip_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: avg_trip_duration_seconds
+        tests:
+          - not_null
+      - name: median_trip_duration_seconds
+        tests:
+          - not_null
+
+  - name: gold_popular_routes
+    description: >
+      Trip volume and average duration for each unique start station to
+      end station route.
+    columns:
+      - name: start_station_id
+        tests:
+          - not_null
+      - name: end_station_id
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+
+  - name: gold_station_net_flow
+    description: >
+      Daily net bike flow per station, calculated as departures minus arrivals. Positive
+      values indicate a station losing bikes. Negative
+      values indicate increasing bikes.
+    columns:
+      - name: station_id
+        tests:
+          - not_null
+      - name: activity_date
+        tests:
+          - not_null
+      - name: departure_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: arrival_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+      - name: net_flow
+        description: departure_count - arrival_count
+        tests:
+          - not_null
