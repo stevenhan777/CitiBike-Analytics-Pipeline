@@ -11,7 +11,7 @@ import sys
 
 import pytest
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from src.bronze.download_utils import resolve_month_key, combine_csvs
 
@@ -48,7 +48,7 @@ class TestResolveMonthKey:
         """
         Month 13 doesn't exist. The function should return None since 13 fails to match the number or month
         """
-        result = resolve_month_key("13_December", "2016")
+        result = resolve_month_key("13_Nonexistent", "2016")
         assert result is None
 
     # Additional edge cases
