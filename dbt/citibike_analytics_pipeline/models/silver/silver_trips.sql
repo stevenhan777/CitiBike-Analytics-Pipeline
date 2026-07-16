@@ -183,6 +183,19 @@ filtered as (
         -- ~202 rows, started_at time should be less than ended_at
         and started_at < ended_at
 
+),
+
+-- When running against the 'ci' target, only process
+-- one month of source data to keep CI builds fast. This has no effect on
+-- dev or prod targets, which process the full dataset.
+ci_filter as (
+
+    select *
+    from filtered
+    {% if target.name == 'ci' %}
+    where source_file like '%202401%'
+    {% endif %}
+
 )
 
-select * from filtered
+select * from ci_filter
