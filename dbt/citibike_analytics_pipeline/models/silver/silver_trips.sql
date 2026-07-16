@@ -188,6 +188,7 @@ filtered as (
 -- When running against the 'ci' target, only process
 -- one month of source data to keep CI builds fast. This has no effect on
 -- dev or prod targets, which process the full dataset.
+-- test 
 ci_filter as (
 
     select *
