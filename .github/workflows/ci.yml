@@ -32,11 +32,11 @@ jobs:
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml << 'EOF'
           citibike:
-            target: prod
+            target: ci
             outputs:
-              prod:
+              ci:
                 type: databricks
-                catalog: citibike
+                catalog: citibike_ci
                 schema: silver
                 host: "{{ env_var('DATABRICKS_HOST') }}"
                 http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
