@@ -34,11 +34,11 @@ sources:
           - name: "end station longitude"
             description: Longitude of the end station (string)
           - name: bikeid
-            description: ID of the bike used for the trip
+            description: ID of the bike used for the trip (string)
           - name: usertype
             description: "'Subscriber' or 'Customer' in legacy schema"
           - name: "birth year"
-            description: Birth year of the rider
+            description: Birth year of the rider (string)
           - name: gender
             description: Gender of the rider, 0 is unknown, 1 is male, 2 is female
           - name: source_file

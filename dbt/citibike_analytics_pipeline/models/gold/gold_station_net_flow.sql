@@ -4,6 +4,7 @@
 -- Negative net_flow = station gains more bikes than it loses
 -- Around zero = roughly self balancing
 
+-- CTE table of departures by start_station_id, name and date
 with departures as (
 
     select
@@ -20,6 +21,7 @@ with departures as (
         date(started_at)
 ),
 
+-- CTE arrivals by end_station_id, name and date
 arrivals as (
 
     select
@@ -36,6 +38,7 @@ arrivals as (
         date(ended_at)
 ),
 
+-- full outer join to keep all rows and set as 0 if not present. 
 combined as (
 
     select
@@ -53,7 +56,7 @@ combined as (
 
 select
     station_id,
-    station_name,
+    station_name,s
     activity_date,
     departure_count,
     arrival_count,
