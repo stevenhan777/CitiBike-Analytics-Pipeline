@@ -1,6 +1,7 @@
-# Ingesting from S3 Helper functions. Handles both folder naming conventions inside yearly zips:
-# pre-2020: "1_January", "2_February", etc.
-# 2020+: "202001-citibike-tripdata", etc.
+# Helper functions for ingesting data from the CitiBike S3. Used with ingest_data_from_s3.ipynb.
+# Handles both folder naming conventions inside yearly zip files:
+# Before 2020: "1_January", "2_February", etc.
+# After 2020: "202001-citibike-tripdata", etc.
 
 import subprocess
 import os
@@ -21,16 +22,16 @@ MONTH_NAME_TO_NUM = {
 
 def resolve_month_key(entry_name, year):
     """
-    Given a folder/zip entry name and the year of the source zip,
+    Given a folder/zip file entry name and the year of the source zip file,
     return a "YYYYMM" key, or None if it doesn't match either
     known naming convention.
     """
-    # Convention 1 (2020+): starts with 6-digit YYYYMM
+    # 2020+ starts with 6 digit YYYYMM
     m = re.match(r"^(\d{6})", entry_name)
     if m:
         return m.group(1)
 
-    # Convention 2 (pre-2020): "1_January", "2_February", etc.
+    # Before 2020 is "1_January", "2_February", etc.
     m = re.match(r"^(\d{1,2})[_\-\s]+([A-Za-z]+)", entry_name)
     if m:
         month_num_raw = m.group(1).zfill(2)
@@ -128,7 +129,7 @@ def extract_yearly_zip(zip_path, extract_dir, year):
                 for p in found:
                     register(month_key, p)
 
-            # Ignores loose csvs directly in main directory
+            # Ignores loose csvs directly in top level directory
             elif entry.lower().endswith(".csv"):
                 print(f"Ignoring stray CSV: {entry}")
 
