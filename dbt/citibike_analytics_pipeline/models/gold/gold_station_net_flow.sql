@@ -56,7 +56,7 @@ combined as (
 
 select
     station_id,
-    station_name,s
+    station_name,
     activity_date,
     departure_count,
     arrival_count,
